@@ -1,8 +1,8 @@
 import React from 'react';
-import { ApolloProvider } from "react-apollo";
-import { client } from './apollo-client'
-import { gql } from "apollo-boost";
-import { Query } from "react-apollo";
+import { ApolloProvider } from 'react-apollo';
+import { client } from './apollo-client';
+import { gql } from 'apollo-boost';
+import { Query } from 'react-apollo';
 
 const GET_PEOPLE = gql`
   query {
@@ -21,15 +21,15 @@ const DELETE_PERSON = gql`
 `;
 
 function App() {
-
-  const handleClick = (id) => {
+  const handleClick = id => {
     const { result } = client.mutate({
       mutation: DELETE_PERSON,
       variables: {
         id
-      }
-    })
-  }
+      },
+      refetchQueries: [{ query: GET_PEOPLE }]
+    });
+  };
 
   return (
     <ApolloProvider client={client}>
@@ -42,9 +42,9 @@ function App() {
               <ul>
                 {data.people.map(({ id, name, username }) => (
                   <li key={id}>
-                  name: {name} <br/>
-                  username: {username}
-                  <button onClick={handleClick.bind(null, id)}>삭제</button>
+                    name: {name} <br />
+                    username: {username}
+                    <button onClick={handleClick.bind(null, id)}>삭제</button>
                   </li>
                 ))}
               </ul>
